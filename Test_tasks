@@ -1,0 +1,155 @@
+#include <iostream>
+#include <string>
+#include <iomanip>
+
+void menu();
+int task_one(int arr[], int size);
+void task_two(int base_length);
+bool task_three(std::string);
+
+int main()
+{
+	int task_number;
+
+	do
+	{
+		menu();
+		std::cin >> task_number;
+		while (std::cin.fail() || task_number > 3 || task_number < 0)
+		{
+			std::cout << "Wrong input!" << std::endl;
+			std::cin.clear();
+			std::cin.ignore(256, '\n');
+			std::cout << "Try again: ";
+			std::cin >> task_number;
+		}
+		switch (task_number)
+		{
+			case 0:
+			{
+				std::cout << std::endl;
+				return 0;
+				break;
+			}
+			case 1:
+			{
+				int arr[10] = {1, 1, 5, 8, 8, 8, 1, 8, 9, 9};
+				int number = task_one(arr, 10);
+				std::cout << "\nNumber " << number << " has the longest reccuring sequence within array" << std::endl << std::endl;
+				system("PAUSE");
+				break;
+			}
+			case 2:
+			{
+				int base_length;
+				std::cout << "\nEnter base length of triangle: ";
+				std::cin >> base_length;
+				task_two(base_length);
+				std::cout << std::endl;
+				system("PAUSE");
+				break;
+			}
+			case 3:
+			{
+				std::string text;
+				bool balance;
+				std::cout << "Enter your text here: ";
+				std::cin >> text;
+				balance = task_three(text);
+				if (balance)
+					std::cout << "Not balanced" << std::endl;
+				else
+					std::cout << "Balanced" << std::endl;
+				system("PAUSE");
+				break;
+			}
+		}
+	}
+	while (task_number);
+
+	return 0;
+}
+
+void menu()
+{
+	int task;
+	std::cout
+		<< "\n0. Exit" << std::endl
+		<< "1. Task 1" << std::endl
+		<< "2. Task 2" << std::endl
+		<< "3. Task 3" << std::endl;
+	std::cout << "Choose the task (enter number): ";
+}
+
+int task_one(int arr[], int size)
+{
+	int rec_sequence = 1;
+	int lrec_sequence = 0;
+	int number;
+
+	for (unsigned int i = 0; i < size - 1; i++)
+	{
+		if (arr[i] == arr[i + 1])
+			rec_sequence++;
+		else
+			if (rec_sequence > lrec_sequence)
+			{
+				number = arr[i];
+				lrec_sequence = rec_sequence;
+				rec_sequence = 1;
+			}
+			else
+				rec_sequence = 1;
+	}
+	return number;
+}
+
+void task_two(int base_length)
+{
+	int spaces;
+	int ascii_symbol = 42;
+	if (base_length % 2 == 0)
+		for (int i = 2; i <= base_length; i += 2)
+		{
+			spaces = ((base_length - i) / 2) + i;
+			std::cout << std::setw(spaces) << std::string(i, char(ascii_symbol)) << std::endl;
+		}
+	else
+		for (int i = 1; i <= base_length; i += 2)
+		{
+			spaces = ((base_length - i) / 2) + i;
+			std::cout << std::setw(spaces) << std::string(i, char(ascii_symbol)) << std::endl;
+		}
+}
+
+bool task_three(std::string text)
+{
+	std::string stack;
+	int position = text.length();
+	if (text.at(0) == ')' || text.at(0) == ']' || text.at(0) == '}')
+		return 1;
+
+	for(int i = 0; i < text.length(); i++)
+	{
+
+		if (text.at(i) == '(' || text.at(i) == '[' || text.at(i) == '{')
+		{
+			stack += text.at(i);
+		}
+		else
+		{
+			if (text.at(i) == ')' && !stack.empty() && stack.back() == '('
+				|| text.at(i) == '}' && !stack.empty() && stack.back() == '{'
+				|| text.at(i) == ']' && !stack.empty() && stack.back() == '[')
+			{
+				stack = stack.substr(0, stack.size() - 1);
+			}
+			else
+				return 1;
+		}
+	}
+	if (!stack.empty())
+		return 1;
+
+	return 0;
+}
